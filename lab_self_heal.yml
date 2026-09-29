@@ -1,0 +1,20 @@
+- name: Precision Lab Self-Healing
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Ensure all Docker containers are running
+      community.general.docker_container:
+        name: "{{ item }}"
+        state: started
+      loop:
+        - nextcloud-stack-nextcloud-app-1
+        - nextcloud-stack-nextcloud-db-1
+        - wikijs-portfolio-wiki-1
+        - wikijs-portfolio-db-1
+        - portainer
+      register: lab_results
+
+    - name: Report verified status
+      debug:
+        msg: "Verified {{ item.item }} operational."
+      loop: "{{ lab_results.results }}"
